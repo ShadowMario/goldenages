@@ -4,23 +4,17 @@
 	{
 		"Version"
 		{
-			"Latest"	"1.03b"
-			"Previous"	"1.02b"
+			"Latest"	"1.04b"
+			"Previous"	"1.03b"
 		}
 
-		"Notes"			"Sistema de Auto Atualizacao adicionado"
-		"Notes"			"Consertado Minicrits de Soda Popper piscando (clientside)"
-		"Notes"			"Adicionado Bonk, Criticola, Fera de Bronze e Natascha"
+		"Notes"			"Consertada Criticola nao removendo seus efeitos"
+		"Notes"			"Adicionado Flogistinador, Lanca Foguetes do Lamentavel e Spy Lactite"
+		"Notes"			"Conjunto do Spy do Saara agora tem seus stats antigos"
 	}
 
 	"Files"
 	{
-		"Patch"
-		{
-			"Plugin"	"Path_SM/plugins/golden_ages.smx"
-			"Source"	"Path_SM/scripting/golden_ages.sp"
-		}
-
 		"Plugin"		"Path_SM/plugins/golden_ages.smx"
 		"Source"		"Path_SM/scripting/golden_ages.sp"
 		"Plugin"		"Path_SM/translations/golden_ages.phrases.txt"

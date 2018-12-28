@@ -1,0 +1,494 @@
+"Phrases"
+{
+	"title"
+	{
+		"en"	"Checking Weapons Stats"
+		"pt"	"Checando Stats das Armas"
+	}
+	"advertise"
+	{
+		"en"	"{gold}[GA]{default} This server has {gold}''Golden Ages''{default} plugin installed! Type {lime}!checkstats{default} to check the changes done in your weapons."
+		"pt"	"{gold}[GA]{default} Esse servidor tem o plugin {gold}''Golden Ages''{default} instalado! Digite {lime}!checkstats{default} para checar as mudanças feitas em suas armas."
+	}
+	"newstats"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1}'s New Stats:"
+		"pt"		"Novos Stats do(a) {1}:"
+	}
+	"removedstats"
+	{
+		"#format"	"{1:s}"
+		"en"		"Stats removed from {1}:"
+		"pt"		"Stats removidos do(a) {1}:"
+	}
+	"addedstats"
+	{
+		"#format"	"{1:s}"
+		"en"		"Stats added to {1}:"
+		"pt"		"Stats adicionados para o(a) {1}:"
+	}
+	"changedstats"
+	{
+		"#format"	"{1:s}"
+		"en"		"Stats changed from {1}:"
+		"pt"		"Stats modificados do(a) {1}:"
+	}
+	"nochanges"
+	{
+		"en"		"{gold}[GA]{default} {red}None of the weapons you have equipped had changes!{default}"
+		"pt"		"{gold}[GA]{default} {red}Nenhuma das armas que você tem equipadas tiveram mudanças!{default}"
+	}
+	"blastjumpdmgpen"
+	{
+		"#format"	"{1:i}"
+		"en"		"(-) +{1}pct Self blast damage taken"
+		"pt"		"(-) Dano explosivo causado à si mesmo +{1}pct maior"
+	}
+	"blastjumpdmgbon"
+	{
+		"#format"	"{1:i}"
+		"en"		"(+) -{1}pct Self blast damage taken"
+		"pt"		"(+) Dano explosivo causado à si mesmo -{1}pct menor"
+	}
+	"concheror"
+	{
+		"en"		"(+/-) Reduced HP regeneration from +4 HP per second to +2 HP per second, but the regenation isn't affected for taking damage"
+		"pt"		"(+/-) Regeneração de HP reduzida de +4 HP por segundo para +2 HP por segundo, mas a regeneração não é afetada ao levar dano"
+	}
+	"clippen"
+	{
+		"#format"	"{1:i}"
+		"en"		"(-) -{1}pct Clip size"
+		"pt"		"(-) Cartucho -{1}pct menor"
+	}
+	"firepen"
+	{
+		"#format"	"{1:i}"
+		"en"		"(-) -{1}pct Slower firing speed"
+		"pt"		"(-) Velocidade de ataque -{1}pct menor"
+	}
+	"firebon"
+	{
+		"#format"	"{1:i}"
+		"en"		"(+) +{1}pct Faster firing speed"
+		"pt"		"(+) Velocidade de ataque +{1}pct maior"
+	}
+	"reloadbon"
+	{
+		"#format"	"{1:i}"
+		"en"		"(+) +{1}pct Faster reloading speed"
+		"pt"		"(+) Velocidade de recarga +{1}pct maior"
+	}
+	"jaratetime"
+	{
+		"en"		"(+) Jarate duration increased from 5 to 8 seconds"
+		"pt"		"(+) Duração do Jarratê aumentada de 5 para 8 segundos"
+	}
+	"accuracyfell"
+	{
+		"en"		"(-) Accuracy decreases based on how much bullets you shot"
+		"pt"		"(-) Precisão cai baseado em quantas balas você atirar"
+	}
+	"accuracybon"
+	{
+		"#format"	"{1:i}"
+		"en"		"(+) +{1}pct More accurate"
+		"pt"		"(+) +{1}pct Mais preciso"
+	}
+	"axtinguisher"
+	{
+		"en"		"(+) On Hit in burning players: Mini-crits from front and Crits from behind"
+		"pt"		"(+) Ao Acertar um jogador incendiado: Mini-crits pela frente e Crits por trás"
+	}
+	"dmgpenfire"
+	{
+		"#format"	"{1:i}"
+		"en"		"(-) -{1}pct Damage against non-burning players"
+		"pt"		"(-) -{1}pct de Dano contra jogadores não incendiados"
+	}
+	"enforcerdmg"
+	{
+		"#format"	"{1:i}"
+		"en"		"(+) +{1}pct Damage bonus while undisguised"
+		"pt"		"(+) +{1}pct de Dano enquanto não estiver disfarçado"
+	}
+	"knockpen"
+	{
+		"#format"	"{1:i}"
+		"en"		"(-) +{1}pct Knockback taken"
+		"pt"		"(-) +{1}pct de Força de empurrão sofrido"
+	}
+	"healthpackbon"
+	{
+		"#format"	"{1:i}"
+		"en"		"(+) +{1}pct HP from medkits"
+		"pt"		"(+) +{1}pct de HP por kits médicos"
+	}
+	"nataschastat"
+	{
+		"en"		"(-) Removed the 20pct damage resistance stat"
+		"pt"		"(-) Removido o stat de resistência à 20pct de dano"
+	}
+	"blastradiuspen"
+	{
+		"#format"	"{1:i}"
+		"en"		"(-) Blast Radius reduced by {1}pct"
+		"pt"		"(-) Raio de Explosão reduzido em {1}pct"
+	}
+	"maxammoprimbon"
+	{
+		"#format"	"{1:i}"
+		"en"		"(+) +{1}pct Max primary ammo"
+		"pt"		"(+) +{1}pct de Munição primária máxima"
+	}
+	"deadringermetal"
+	{
+		"en"		"(-) HIDDEN: Can't recharge cloak with ammo"
+		"pt"		"(-) ESCONDIDO: Não recarrega o relógio através de munição"
+	}
+	"norandomcrits"
+	{
+		"en"		"(-) No random criticals"
+		"pt"		"(-) Sem críticos aleatórios"
+	}
+	"ambyrange"
+	{
+		"en"		"(-) Crit damage is affected by range"
+		"pt"		"(-) Dano crítico é afetado pela distância"
+	}
+	"gru"
+	{
+		"en"		"(+/-) HP Draining changed to ''Self Mark to death''"
+		"pt"		"(+/-) Drenagem de HP trocada por ''Auto-marcar para a morte''"
+	}
+	"evictnotice"
+	{
+		"en"		"(+/-) HP Draining changed to ''+20pct damage taken while active''"
+		"pt"		"(+/-) Drenagem de HP trocada por ''+20pct de dano sofrido enquanto ativo''"
+	}
+	"firepenremov"
+	{
+		"en"		"(+) Removed Firing speed penalty"
+		"pt"		"(+) Removida penalidade de veloc. de ataque"
+	}
+	"switchpenremov"
+	{
+		"en"		"(+) Removed Switching speed penalty"
+		"pt"		"(+) Removida penalidade de veloc. de troca de arma"
+	}
+	"caber"
+	{
+		"en"		"(+/-) Explosion damage: 152dmg\nHit damage (Detonated): 35dmg"
+		"pt"		"(+/-) Dano da explosão: 152\nDano de acerto (Detonada): 35"
+	}
+	"hypeonrun"
+	{
+		"en"		"(+) Hype increased while running"
+		"pt"		"(+) Híper aumentada enquanto corre"
+	}
+	"atomizer"
+	{
+		"en"		"(+) While equipped, wearer can do Triple jump"
+		"pt"		"(+) Enquanto equipada, você pode dar Pulo triplo"
+	}
+	"dmgvsplayerspen"
+	{
+		"#format"	"{1:i}"
+		"en"		"(-) -{1}pct Damage vs. players"
+		"pt"		"(-) -{1}pct de Dano contra jogadores"
+	}
+	"movepen"
+	{
+		"#format"	"{1:i}"
+		"en"		"(-) -{1}pct Move speed on wearer"
+		"pt"		"(-) Velocidade -{1}pct menor enquanto equipada"
+	}
+	"dmgbon"
+	{
+		"#format"	"{1:i}"
+		"en"		"(+) +{1}pct Damage bonus"
+		"pt"		"(+) +{1}pct de Dano causado"
+	}
+	"dmgpen"
+	{
+		"#format"	"{1:i}"
+		"en"		"(-) -{1}pct Damage penalty"
+		"pt"		"(-) -{1}pct de Dano causado"
+	}
+	"projbon"
+	{
+		"#format"	"{1:i}"
+		"en"		"(+) +{1}pct Projectile speed"
+		"pt"		"(+) +{1}pct de Velocidade de projétil"
+	}
+	"nospin"
+	{
+		"en"		"(+) Grenades doesn't spin in air"
+		"pt"		"(+) Granadas não giram no ar"
+	}
+	"grenshatter"
+	{
+		"en"		"(-) Grenades shatter on contact with surface"
+		"pt"		"(-) Granadas são destruidas em contato com superfície"
+	}
+	"maxhealthadd"
+	{
+		"#format"	"{1:i}"
+		"en"		"(+) +{1} Maximum HP"
+		"pt"		"(+) +{1} de HP máximo"
+	}
+	"maxhealthremove"
+	{
+		"#format"	"{1:i}"
+		"en"		"(-) -{1} Maximum HP"
+		"pt"		"(-) -{1} de HP máximo"
+	}
+	"cancelfalldmg"
+	{
+		"en"		"(+) Wearer doesn't take fall damage"
+		"pt"		"(+) Usuário não leva dano de queda"
+	}
+	"firedmgpen"
+	{
+		"#format"	"{1:i}"
+		"en"		"(-) +{1}pct Fire damage taken"
+		"pt"		"(-) +{1}pct de Dano de fogo sofrido"
+	}
+	"firedmgbon"
+	{
+		"#format"	"{1:i}"
+		"en"		"(+) -{1}pct Fire damage taken"
+		"pt"		"(+) -{1}pct de Dano de fogo sofrido"
+	}
+	"blastdmgbon"
+	{
+		"#format"	"{1:i}"
+		"en"		"(+) -{1}pct Blast damage taken"
+		"pt"		"(+) -{1}pct de Dano de explosões sofrido"
+	}
+	"stuncrits"
+	{
+		"en"		"(+) Crits vs. Stunned players"
+		"pt"		"(+) Crits contra Jogadores Atordoados"
+	}
+	"autofire"
+	{
+		"en"		"(+/-) Stock bullets with MOUSE1, release MOUSE1 to start shooting until it's empty"
+		"pt"		"(+/-) Guarda balas com MOUSE1, solte MOUSE1 para começar a atirar até acabar"
+	}
+	"oldstun"
+	{
+		"en"		"(+) Stun enemies on hit with ball instead of slowing"
+		"pt"		"(+) Atordoa inimigos ao acertar com a bola ao invés de deixá-los lentos"
+	}
+	"boostjump"
+	{
+		"en"		"(-) Boost resetted on jump"
+		"pt"		"(-) Boost resetado ao pular"
+	}
+	"boostonhit"
+	{
+		"en"		"(+) On Hit: Builds Boost"
+		"pt"		"(+) Ao Acertar: Ganha Energia"
+	}
+	"boostspeed"
+	{
+		"en"		"(+) Run up to double speed when your boost is full"
+		"pt"		"(+) Corra com o dobro de velocidade quando sua energia estiver cheia"
+	}
+	"bootsstat"
+	{
+		"en"		"(+) You don't require a shield anymore for the speed bonus"
+		"pt"		"(+) Não é mais necessário um escudo para o bônus de velocidade"
+	}
+	"sydneyhs"
+	{
+		"en"		"(-) Headshots deal normal damage"
+		"pt"		"(-) Headshots causam dano normal"
+	}
+	"markcolastat"
+	{
+		"en"		"(+) Removed stat ''Marks you for death for 5 seconds when you take damage while in its effects''"
+		"pt"		"(+) Removido o stat ''Te marca para a morte por 5 segundos ao levar dano enquanto estiver em seus efeitos''"
+	}
+	"speedcolastat"
+	{
+		"en"		"(+) Added stat ''+25pct speed while in its effects''"
+		"pt"		"(+) Adicionado o stat ''+25pct de velocidade enquanto estiver em seus efeitos''"
+	}
+	"bonkstat"
+	{
+		"en"		"(+) Removed stat ''Slowdowns you when you take damage after the end of its effects''"
+		"pt"		"(+) Removido o stat ''Te deixa lento após levar dano quando seus efeitos acabam''"
+	}
+	"ciclestat1"
+	{
+		"en"		"(+) Fire protection effects time increased to 3 seconds"
+		"pt"		"(+) Tempo de efeito de proteção contra Fogo aumentado para 3 segundos"
+	}
+	"ciclestat2"
+	{
+		"en"		"(-) Afterburn protection effects time increased to 3 seconds"
+		"pt"		"(-) Tempo de efeito de proteção contra Pós-queimadura diminuido para 3 segundos"
+	}
+	"ciclestat3"
+	{
+		"en"		"(+/-) A bubble is displayed around you while invulnerable to fire"
+		"pt"		"(+/-) Uma bolha é mostrada ao seu redor enquanto invulnerável à Fogo"
+	}
+	"phlog1"
+	{
+		"en"		"(+) Damage needed to fill ''Mmph'' meter decreased from 300 to 225"
+		"pt"		"(+) Dano necessário para encher barra de ''Mmph'' diminuído de 300 para 225"
+	}
+	"phlog2"
+	{
+		"en"		"(+) When Mmph is activated: Fills your health"
+		"pt"		"(+) Ao ativar o Mmph: Enche sua vida"
+	}
+	"wep_atomizer"
+	{
+		"en"		"Atomizer"
+		"pt"		"Atomizador"
+	}
+	"wep_sandman"
+	{
+		"en"		"Sandman"
+		"pt"		"João Pestana"
+	}
+	"wep_pbpp"
+	{
+		"en"		"Pretty Boy's Pocket Pistol"
+		"pt"		"Pistola Portátil do Peralta"
+	}
+	"wep_sydney"
+	{
+		"en"		"Sydney Sleeper"
+		"pt"		"Anestesiador de Sydney"
+	}
+	"wep_gru"
+	{
+		"en"		"Gloves of Running Urgently"
+		"pt"		"Geradoraz de Rapidez Urgentes"
+	}
+	"wep_evictnotice"
+	{
+		"en"		"Eviction Notice"
+		"pt"		"Aviso de Despejo"
+	}
+	"wep_sandman"
+	{
+		"en"		"Sandman"
+		"pt"		"João Pestana"
+	}
+	"wep_shortstop"
+	{
+		"en"		"Shortstop"
+		"pt"		"Interbases"
+	}
+	"wep_amby"
+	{
+		"en"		"Ambassador"
+		"pt"		"Embaixador"
+	}
+	"wep_caber"
+	{
+		"en"		"Ullapool Caber"
+		"pt"		"Tora de Ullapool"
+	}
+	"wep_axting"
+	{
+		"en"		"Axtinguisher"
+		"pt"		"Queimachado"
+	}
+	"wep_deadring"
+	{
+		"en"		"Dead Ringer"
+		"pt"		"Cópia Mortal"
+	}
+	"wep_sodapopper"
+	{
+		"en"		"Soda Popper"
+		"pt"		"Refrispingarda"
+	}
+	"wep_enforcer"
+	{
+		"en"		"Enforcer"
+		"pt"		"Capanga"
+	}
+	"wep_babyface"
+	{
+		"en"		"Baby Face's Blaster"
+		"pt"		"Destruidora do Degenerado"
+	}
+	"wep_cleaver"
+	{
+		"en"		"Flying Guillotine"
+		"pt"		"Guilhotina Voadora"
+	}
+	"wep_tideturn"
+	{
+		"en"		"Tide Turner"
+		"pt"		"Descobridor dos Sete Mares"
+	}
+	"wep_panicatk"
+	{
+		"en"		"Panic Attack"
+		"pt"		"Ataque de Pânico"
+	}
+	"wep_loch"
+	{
+		"en"		"Loch-n-Load"
+		"pt"		"Bomba do Lago Ness"
+	}
+	"wep_boots1"
+	{
+		"en"		"Ali Baba's Wee Booties"
+		"pt"		"Botinhas do Ali Babá"
+	}
+	"wep_boots2"
+	{
+		"en"		"Bootlegger"
+		"pt"		"Perna de Pau"
+	}
+	"wep_gunboats"
+	{
+		"en"		"Gunboats"
+		"pt"		"Canhoneiras"
+	}
+	"wep_conch"
+	{
+		"en"		"Concheror"
+		"pt"		"Conchistador"
+	}
+	"wep_critcola"
+	{
+		"en"		"Crit-a-Cola"
+		"pt"		"Criti-Cola"
+	}
+	"wep_bonk"
+	{
+		"en"		"Bonk! Atomic Punch"
+		"pt"		"Bonk! Pancada Atômica"
+	}
+	"wep_natascha"
+	{
+		"en"		"Natascha"
+	}
+	"wep_bazooka"
+	{
+		"en"		"Beggar's Bazooka"
+		"pt"		"Lança-Foguetes do Lamentável"
+	}
+	"wep_phlog"
+	{
+		"en"		"Phlogistinator"
+		"pt"		"Flogistinador"
+	}
+	"wep_spycicle"
+	{
+		"en"		"Spy-Cicle"
+		"pt"		"Spy-Lactite"
+	}
+}

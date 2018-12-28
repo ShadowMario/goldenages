@@ -4,13 +4,11 @@
 	{
 		"Version"
 		{
-			"Latest"	"1.04b"
-			"Previous"	"1.03b"
+			"Latest"	"1.0"
+			"Previous"	"1.04b"
 		}
 
-		"Notes"			"Consertada Criticola nao removendo seus efeitos"
-		"Notes"			"Adicionado Flogistinador, Lanca Foguetes do Lamentavel e Spy Lactite"
-		"Notes"			"Conjunto do Spy do Saara agora tem seus stats antigos"
+		"Notes"			"Public Release"
 	}
 
 	"Files"

@@ -13,8 +13,12 @@
 
 	"Files"
 	{
-		"Plugin"		"Path_SM/plugins/golden_ages.smx"
-		"Source"		"Path_SM/scripting/golden_ages.sp"
-		"Plugin"		"Path_SM/translations/golden_ages.phrases.txt"
+		"Patch"
+		{
+			"Plugin"		"Path_SM/plugins/golden_ages.smx"
+			"Plugin"		"Path_SM/translations/golden_ages.phrases.txt"
+			
+			"Source"		"Path_SM/scripting/golden_ages.sp"
+		}
 	}
 }

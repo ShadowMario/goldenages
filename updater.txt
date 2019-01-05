@@ -4,11 +4,14 @@
 	{
 		"Version"
 		{
-			"Latest"	"1.0"
-			"Previous"	"1.04b"
+			"Latest"	"1.0.1"
+			"Previous"	"1.0"
 		}
 
-		"Notes"			"Public Release"
+		"Notes"			"Fixed sm_ga_enable and sm_ga_disable using a posteriorly-changed cvar"
+		"Notes"			"Reorganized the code to look more comfortable to coders"
+		"Notes"			"Fixed the Concheror displaying two numbers (1 and 2 at the same time) on heal with Max HP - 1"
+		"Notes"			"'player/recharged.wav' now gets precached"
 	}
 
 	"Files"

@@ -15,7 +15,7 @@
 #tryinclude <updater>
 #define REQUIRE_PLUGIN
 
-#define PLUGIN_VERSION		"1.0"
+#define PLUGIN_VERSION		"1.0.1"
 
 #define UPDATE_URL "http://shadowmario.github.io/goldenages/updater.txt"
 
@@ -51,11 +51,15 @@ char itemRecharged[255] = "player/recharged.wav";
 public Plugin myinfo =
 {
 	name = "[TF2] Golden Ages",
-	author = "ShadowMario",
+	author = "ShadowMarioBR",
 	description = "Play with a weapon's best older stats!",
 	version = PLUGIN_VERSION,
-	url = "http://steamcommunity.com/id/shadowmariobr/"
+	url = "https://forums.alliedmods.net/showthread.php?p=2631488"
 }
+
+////////////////////////////////////////////////////
+/////////////////EVENTS & FUNCTIONS/////////////////
+////////////////////////////////////////////////////
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
@@ -125,17 +129,6 @@ public void OnPluginEnd()
 	{
 		if(IsClientInGame(client) && IsValidClient(client)) SDKUnhook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 	}
-}
-
-public Action Timer_NoticeCommand(Handle hTimer)
-{
-	if(!GetConVarBool(cvarEnabled))
-	{
-		return Plugin_Stop;
-	}
-	SetGameDescription();
-	CPrintToChatAll("%t", "advertise");
-	return Plugin_Continue;
 }
 
 public void OnLibraryAdded(const char[] name)
@@ -269,14 +262,6 @@ public Action OnPlayerHurt(Handle event, const char[] name, bool dontBroadcast)
 	return Plugin_Continue;
 }
 
-public Action Timer_StartHook(Handle timer, any userid)
-{
-	int client = GetClientOfUserId(userid);
-	if(IsValidClient(client))
-	{
-		SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
-	}
-}
 public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] newValue)
 {
 	if(convar == cvarEnabled)
@@ -316,7 +301,7 @@ public Action Command_Enable(int client, int args)
 {
 	if(!GetConVarBool(cvarEnabled))
 	{
-		ServerCommand("ga_enabled 1");
+		ServerCommand("sm_ga_enabled 1");
 		ReplyToCommand(client, "[GA] Golden Ages plugin is now enabled.");
 	}
 	else
@@ -330,7 +315,7 @@ public Action Command_Disable(int client, int args)
 {
 	if(GetConVarBool(cvarEnabled))
 	{
-		ServerCommand("ga_enabled 0");
+		ServerCommand("sm_ga_enabled 0");
 		ReplyToCommand(client, "[GA] Golden Ages plugin is now disabled.");
 	}
 	else
@@ -340,28 +325,13 @@ public Action Command_Disable(int client, int args)
 	return Plugin_Handled;
 }
 
-void SetGameDescription()
-{
-	char description[16];
-	GetGameDescription(description, sizeof(description));
-
-	if(GetConVarBool(cvarEnabled) && GetConVarBool(cvarGameDesc) && StrEqual(description, "Team Fortress"))
-	{
-		Format(description, sizeof(description), "Golden Ages v%s", PLUGIN_VERSION);
-		Steam_SetGameDescription(description);
-	}
-	else if((!GetConVarBool(cvarEnabled) || !GetConVarBool(cvarGameDesc)) && StrContains(description, "Golden Ages v") != -1)
-	{
-		Steam_SetGameDescription("Team Fortress");
-	}
-}
-
 public void OnMapStart()
 {
 	if(GetConVarBool(cvarEnabled))
 	{
 		SetGameDescription();
 		PrecacheSound(icicleMelt, true);
+		PrecacheSound(itemRecharged, true);
 	}
 }
 
@@ -419,77 +389,6 @@ public void OnClientDisconnect(int client)
 	weaponChanges[client][2] = false;
 	weaponChanges[client][3] = false;
 	weaponChanges[client][4] = false;
-}
-
-void ResetVars(int client)
-{
-	if(chargeTimer[client] != null)
-	{
-		KillTimer(chargeTimer[client]);
-		chargeTimer[client] = null;
-	}
-	if(conchTimer[client] != null)
-	{
-		KillTimer(conchTimer[client]);
-		conchTimer[client] = null;
-	}
-	if(colaTimer[client] != null)
-	{
-		KillTimer(colaTimer[client]);
-		colaTimer[client] = null;
-		TF2Attrib_SetByName(client, "move speed penalty", 1.0);
-		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.001);
-	}
-	if(icicleTimer[client] != null)
-	{
-		KillTimer(icicleTimer[client]);
-		icicleTimer[client] = null;
-	}
-	demoCharging[client] = false;
-	hypeActivated[client] = false;
-	colaEffect[client] = false;
-	icicleEffect[client] = false;
-	icicleTime[client] = 0;
-	TF2Attrib_SetByName(client, "dmg taken from fire reduced", 1.0);
-	airDashes[client] = 0;
-	lastHype[client] = 0.0;
-	lastButtons[client] &= ~IN_JUMP;
-}
-
-bool IsValidClient(int client)
-{
-	return client > 0 && client <= MaxClients && IsClientConnected(client)
-	&& !IsFakeClient(client) && IsClientInGame(client)
-	&& !GetEntProp(client, Prop_Send, "m_bIsCoaching")
-	&& !IsClientSourceTV(client) && !IsClientReplay(client);
-}
-
-stock int AttachParticle(int entity, char[] particleType, float offset = 0.0, bool attach = true) //Taken from FF2 default_abilities
-{
-	char particle = CreateEntityByName("info_particle_system");
-
-	char targetName[128];
-	float position[3];
-	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", position);
-	position[2]+=offset;
-	TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
-
-	Format(targetName, sizeof(targetName), "target%i", entity);
-	DispatchKeyValue(entity, "targetname", targetName);
-
-	DispatchKeyValue(particle, "targetname", "tf2particle");
-	DispatchKeyValue(particle, "parentname", targetName);
-	DispatchKeyValue(particle, "effect_name", particleType);
-	DispatchSpawn(particle);
-	SetVariantString(targetName);
-	if(attach)
-	{
-		AcceptEntityInput(particle, "SetParent", particle, particle, 0);
-		SetEntPropEnt(particle, Prop_Send, "m_hOwnerEntity", entity);
-	}
-	ActivateEntity(particle);
-	AcceptEntityInput(particle, "start");
-	return particle;
 }
 
 public int TF2Items_OnGiveNamedItem_Post(int client, char[] classname, int index, int itemlvl, int itemqual, int weapon)
@@ -640,44 +539,6 @@ public int TF2Items_OnGiveNamedItem_Post(int client, char[] classname, int index
 		TF2Attrib_SetByName(weapon, "auto fires full clip", 1.0);
 		TF2Attrib_SetByName(weapon, "bullets per shot bonus", 1.0);
 		SetEntProp(weapon, Prop_Data, "m_iClip1", 0);
-	}
-}
-
-stock Action HealPlayer(int client, int amount)
-{
-	Handle healevent = CreateEvent("player_healonhit", true);
-	SetEventInt(healevent, "entindex", client);
-	SetEventInt(healevent, "amount", amount);
-	FireEvent(healevent);
-}
-
-stock Action DealDamage(int victim, int damage, int attacker=0, int dmg_type, char[] weapon = "")	//Thanks to pimpinjuice
-{
-	if (IsValidClient(victim) && IsPlayerAlive(victim) && damage > 0)
-	{
-		char dmg_str[16];
-		IntToString(damage, dmg_str, sizeof(dmg_str));
-		char dmg_type_str[32];
-		IntToString(dmg_type, dmg_type_str, sizeof(dmg_type_str));
-		char pointHurt = CreateEntityByName("point_hurt");
-		if (IsValidEntity(pointHurt))
-		{
-			char target[32];
-			Format(target, sizeof(target), "pointhurtvictim%d", victim);
-			DispatchKeyValue(victim, "targetname", target);
-			DispatchKeyValue(pointHurt, "DamageTarget", target);
-			DispatchKeyValue(pointHurt, "Damage", dmg_str);
-			DispatchKeyValue(pointHurt, "DamageType", dmg_type_str);
-			if (!StrEqual(weapon, ""))
-			{
-				DispatchKeyValue(pointHurt, "classname", weapon);
-			}
-			DispatchSpawn(pointHurt);
-			AcceptEntityInput(pointHurt, "Hurt", (attacker > 0 ? attacker : -1));
-			DispatchKeyValue(pointHurt, "classname", "point_hurt");
-			DispatchKeyValue(victim, "targetname", "notpointhurtvictim");
-			AcceptEntityInput(pointHurt, "Kill");
-		}
 	}
 }
 
@@ -1060,254 +921,6 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	{
 		CreateTimer(0.01, Timer_Bonk, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 	}
-}
-
-stock float GetConditionDuration(int client, TFCond cond)
-{
-	int m_Shared = FindSendPropInfo("CTFPlayer", "m_Shared");
-	
-	Address aCondSource   = view_as< Address >(ReadInt(GetEntityAddress(client) + view_as< Address >(m_Shared + 8)));
-	Address aCondDuration = view_as< Address >(view_as< int >(aCondSource) + (view_as< int >(cond) * 20) + (2 * 4));
-	
-	float flDuration = 0.0;
-	if(TF2_IsPlayerInCondition(client, cond))
-	{
-		flDuration = view_as<float>(ReadInt(aCondDuration));
-	}
-	
-	return flDuration;
-}
-
-stock int ReadInt(Address address)
-{
-	return LoadFromAddress(address, NumberType_Int32);
-}
-
-public Action Timer_ColaTimer(Handle hTimer, any userid)
-{
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client))
-	{
-		colaTimer[client] = null;
-		return Plugin_Stop;
-	}
-	
-	colaEffect[client] = false;
-	TF2Attrib_SetByName(client, "move speed penalty", 1.0);
-	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.01);
-	return Plugin_Continue;
-}
-
-public Action Timer_IcicleTimer(Handle hTimer, any userid)
-{
-	int client = GetClientOfUserId(userid);
-	int melee = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
-	
-	if(!IsValidClient(client) || !IsValidEntity(melee) || GetEntProp(melee, Prop_Send, "m_iItemDefinitionIndex") != 649)
-	{
-		icicleTimer[client] = null;
-		return Plugin_Stop;
-	}
-	
-	icicleEffect[client] = false;
-	TF2Attrib_SetByName(client, "dmg taken from fire reduced", 1.0);
-	KillTimer(icicleTimer[client]);
-	icicleTimer[client] = null;
-	return Plugin_Continue;
-}
-
-public Action Timer_Bonk(Handle hTimer, any userid)
-{
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client) || !IsPlayerAlive(client) || !TF2_IsPlayerInCondition(client, TFCond_Dazed))
-	{
-		return Plugin_Stop;
-	}
-	
-	TF2_RemoveCondition(client, TFCond_Dazed);
-	return Plugin_Continue;
-}
-
-public Action Timer_ChargeCrit(Handle hTimer, any userid)
-{
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client) || !IsPlayerAlive(client) || !TF2_IsPlayerInCondition(client, TFCond_CritDemoCharge))
-	{
-		chargeTimer[client] = null;
-		demoCharging[client] = false;
-		return Plugin_Stop;
-	}
-	
-	demoCharging[client] = true;
-	return Plugin_Continue;
-}
-
-public Action Timer_ConchHeal(Handle hTimer, any userid)
-{
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client) || !IsPlayerAlive(client))
-	{
-		conchTimer[client] = null;
-		return Plugin_Stop;
-	}
-	
-	int health = GetClientHealth(client);
-	int maxhealth = GetEntProp(client, Prop_Data, "m_iMaxHealth");
-	if(health > 0 && health < maxhealth)
-	{
-		if(health + 2 <= maxhealth)
-		{
-			SetEntityHealth(client, health + 2);
-			HealPlayer(client, 2);
-		}
-		else if(health + 2 > maxhealth)
-		{
-			HealPlayer(client, maxhealth - health);
-			SetEntityHealth(client, maxhealth);
-		}
-	}
-	
-	HealPlayer(client, 2);
-	return Plugin_Continue;
-}
-
-public Action Timer_DetectCharge(Handle hTimer, any userid)
-{
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client) || !IsPlayerAlive(client) || !TF2_IsPlayerInCondition(client, TFCond_CritDemoCharge))
-	{
-		chargeTimer[client] = null;
-		demoCharging[client] = false;
-		return Plugin_Stop;
-	}
-	
-	demoCharging[client] = false;
-	return Plugin_Continue;
-}
-
-stock int FindEntityByClassname2(int startEnt, const char[] classname)
-{
-	while(startEnt > -1 && !IsValidEntity(startEnt))
-	{
-		startEnt--;
-	}
-	return FindEntityByClassname(startEnt, classname);
-}
-
-public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	if(!GetConVarBool(cvarEnabled) || !IsValidClient(client) || !IsValidClient(attacker))
-	{
-		return Plugin_Continue;
-	}
-	
-	if(damagecustom == TF_CUSTOM_CLEAVER)
-	{
-		if(TF2_IsPlayerInCondition(client, TFCond_Dazed))
-		{
-			damagetype|=DMG_CRIT;
-			return Plugin_Changed;
-		}
-	}
-	
-	int melee = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee);
-	if(IsValidEntity(melee) && damagecustom == TF_CUSTOM_BASEBALL && !TF2_IsPlayerInCondition(client, TFCond_Ubercharged) && client != attacker && GetEntProp(melee, Prop_Send, "m_iItemDefinitionIndex") == 44) //Old Sandman Stun
-	{
-		TF2_RemoveCondition(client, TFCond_Dazed);
-		float attackerPosition[3], victimPosition[3];
-		GetEntPropVector(attacker, Prop_Send, "m_vecOrigin", attackerPosition);
-		GetEntPropVector(client, Prop_Send, "m_vecOrigin", victimPosition);
-		float distance = GetVectorDistance(attackerPosition, victimPosition);
-		
-		
-		Handle datapack; 
-		CreateDataTimer(0.01, Timer_SandmanTimer, datapack);
-		WritePackFloat(datapack, distance);
-		WritePackCell(datapack, client);
-		WritePackCell(datapack, attacker);
-		WritePackCell(datapack, damagetype);
-	}
-	
-	int shield = MaxClients+1;
-	while((shield = FindEntityByClassname2(shield, "tf_wearable_demoshield")) != -1)
-	{
-		int idx = GetEntProp(shield, Prop_Send, "m_iItemDefinitionIndex");
-		if (IsValidEntity(melee) && melee > -1 && (idx == 1099) && GetEntPropEnt(shield, Prop_Send, "m_hOwnerEntity") == attacker && !GetEntProp(shield, Prop_Send, "m_bDisguiseWearable") && demoCharging[attacker])
-		{
-			if(GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon") == melee && damagecustom != TF_CUSTOM_BLEEDING && damagecustom != TF_CUSTOM_BURNING && damagecustom != TF_CUSTOM_BURNING_ARROW && damagecustom != TF_CUSTOM_BURNING_FLARE && damagecustom != TF_CUSTOM_CHARGE_IMPACT)
-			{
-				damagetype|=DMG_CRIT;
-				demoCharging[client] = false;
-				return Plugin_Changed;
-			}
-		}
-	}
-	
-	int activeWep = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
-	if(IsValidEntity(activeWep) && GetEntProp(activeWep, Prop_Send, "m_iItemDefinitionIndex") == 230)
-	{
-		if((damagetype & DMG_CRIT) && !(TF2_IsPlayerInCondition(attacker, TFCond_Kritzkrieged) ||
-		TF2_IsPlayerInCondition(attacker, TFCond_HalloweenCritCandy) ||
-		TF2_IsPlayerInCondition(attacker, TFCond_CritCanteen) ||
-		TF2_IsPlayerInCondition(attacker, TFCond_CritOnWin) ||
-		TF2_IsPlayerInCondition(attacker, TFCond_CritOnFlagCapture) ||
-		TF2_IsPlayerInCondition(attacker, TFCond_CritOnKill)))
-		{
-			damagetype &= ~DMG_CRIT;
-			return Plugin_Changed;
-		}
-	}
-	return Plugin_Continue;
-}
-
-public Action Timer_SandmanTimer(Handle timer, Handle datapack) //Taken from FF2 default_abilities
-{
-	float distance;
-	int client, attacker, damagetype;
-	
-	ResetPack(datapack);
-	distance = ReadPackFloat(datapack);
-	client = ReadPackCell(datapack);
-	attacker = ReadPackCell(datapack);
-	damagetype = ReadPackCell(datapack);
-	
-	if(distance >= 256.0 && distance < 1792.0)
-	{
-		if(damagetype & DMG_CRIT)
-		{
-			TF2_StunPlayer(client, (distance / 256.0) + 2.0, 0.0, TF_STUNFLAGS_SMALLBONK|TF_STUNFLAG_NOSOUNDOREFFECT, attacker);
-			CreateTimer((distance / 256.0) + 2.0, Timer_StarsRemove, EntIndexToEntRef(AttachParticle(client, "conc_stars", 80.0)), TIMER_FLAG_NO_MAPCHANGE);
-		}
-		else
-		{
-			TF2_StunPlayer(client, distance / 256.0, 0.0, TF_STUNFLAGS_SMALLBONK|TF_STUNFLAG_NOSOUNDOREFFECT, attacker);
-			CreateTimer(distance / 256.0, Timer_StarsRemove, EntIndexToEntRef(AttachParticle(client, "conc_stars", 80.0)), TIMER_FLAG_NO_MAPCHANGE);
-		}
-	}
-	else if(distance >= 1792.0)
-	{
-		if(damagetype & DMG_CRIT)
-		{
-			TF2_StunPlayer(client, 9.0, 0.0, TF_STUNFLAGS_BIGBONK|TF_STUNFLAG_NOSOUNDOREFFECT, attacker);
-			CreateTimer(9.0, Timer_StarsRemove, EntIndexToEntRef(AttachParticle(client, "conc_stars", 80.0)), TIMER_FLAG_NO_MAPCHANGE);
-		}
-		else
-		{
-			TF2_StunPlayer(client, 7.0, 0.0, TF_STUNFLAGS_BIGBONK|TF_STUNFLAG_NOSOUNDOREFFECT, attacker);
-			CreateTimer(7.0, Timer_StarsRemove, EntIndexToEntRef(AttachParticle(client, "conc_stars", 80.0)), TIMER_FLAG_NO_MAPCHANGE);
-		}
-	}
-	return Plugin_Continue;
-}
-
-public Action Timer_StarsRemove(Handle timer, any entid) //Taken from FF2 default_abilities
-{
-	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity) && entity > MaxClients)
-	{
-		AcceptEntityInput(entity, "Kill");
-	}
-	return Plugin_Continue;
 }
 
 public Action Command_CheckStats(int client, int args)
@@ -1780,4 +1393,403 @@ public int CheckStats_Handler(Handle menu, MenuAction action, int param1, int pa
 	{
 		CloseHandle(menu);
 	}
+}
+
+////////////////////////////////////////////////////
+//////////////////////STOCKS////////////////////////
+////////////////////////////////////////////////////
+
+void SetGameDescription()
+{
+	char description[16];
+	GetGameDescription(description, sizeof(description));
+
+	if(GetConVarBool(cvarEnabled) && GetConVarBool(cvarGameDesc) && StrEqual(description, "Team Fortress"))
+	{
+		Format(description, sizeof(description), "Golden Ages v%s", PLUGIN_VERSION);
+		Steam_SetGameDescription(description);
+	}
+	else if((!GetConVarBool(cvarEnabled) || !GetConVarBool(cvarGameDesc)) && StrContains(description, "Golden Ages v") != -1)
+	{
+		Steam_SetGameDescription("Team Fortress");
+	}
+}
+
+void ResetVars(int client)
+{
+	if(chargeTimer[client] != null)
+	{
+		KillTimer(chargeTimer[client]);
+		chargeTimer[client] = null;
+	}
+	if(conchTimer[client] != null)
+	{
+		KillTimer(conchTimer[client]);
+		conchTimer[client] = null;
+	}
+	if(colaTimer[client] != null)
+	{
+		KillTimer(colaTimer[client]);
+		colaTimer[client] = null;
+		TF2Attrib_SetByName(client, "move speed penalty", 1.0);
+		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.001);
+	}
+	if(icicleTimer[client] != null)
+	{
+		KillTimer(icicleTimer[client]);
+		icicleTimer[client] = null;
+	}
+	demoCharging[client] = false;
+	hypeActivated[client] = false;
+	colaEffect[client] = false;
+	icicleEffect[client] = false;
+	icicleTime[client] = 0;
+	TF2Attrib_SetByName(client, "dmg taken from fire reduced", 1.0);
+	airDashes[client] = 0;
+	lastHype[client] = 0.0;
+	lastButtons[client] &= ~IN_JUMP;
+}
+
+bool IsValidClient(int client)
+{
+	return client > 0 && client <= MaxClients && IsClientConnected(client)
+	&& !IsFakeClient(client) && IsClientInGame(client)
+	&& !GetEntProp(client, Prop_Send, "m_bIsCoaching")
+	&& !IsClientSourceTV(client) && !IsClientReplay(client);
+}
+
+stock int AttachParticle(int entity, char[] particleType, float offset = 0.0, bool attach = true) //Taken from FF2 default_abilities
+{
+	char particle = CreateEntityByName("info_particle_system");
+
+	char targetName[128];
+	float position[3];
+	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", position);
+	position[2]+=offset;
+	TeleportEntity(particle, position, NULL_VECTOR, NULL_VECTOR);
+
+	Format(targetName, sizeof(targetName), "target%i", entity);
+	DispatchKeyValue(entity, "targetname", targetName);
+
+	DispatchKeyValue(particle, "targetname", "tf2particle");
+	DispatchKeyValue(particle, "parentname", targetName);
+	DispatchKeyValue(particle, "effect_name", particleType);
+	DispatchSpawn(particle);
+	SetVariantString(targetName);
+	if(attach)
+	{
+		AcceptEntityInput(particle, "SetParent", particle, particle, 0);
+		SetEntPropEnt(particle, Prop_Send, "m_hOwnerEntity", entity);
+	}
+	ActivateEntity(particle);
+	AcceptEntityInput(particle, "start");
+	return particle;
+}
+
+stock Action HealPlayer(int client, int amount)
+{
+	Handle healevent = CreateEvent("player_healonhit", true);
+	SetEventInt(healevent, "entindex", client);
+	SetEventInt(healevent, "amount", amount);
+	FireEvent(healevent);
+}
+
+stock Action DealDamage(int victim, int damage, int attacker=0, int dmg_type, char[] weapon = "")	//Thanks to pimpinjuice
+{
+	if (IsValidClient(victim) && IsPlayerAlive(victim) && damage > 0)
+	{
+		char dmg_str[16];
+		IntToString(damage, dmg_str, sizeof(dmg_str));
+		char dmg_type_str[32];
+		IntToString(dmg_type, dmg_type_str, sizeof(dmg_type_str));
+		char pointHurt = CreateEntityByName("point_hurt");
+		if (IsValidEntity(pointHurt))
+		{
+			char target[32];
+			Format(target, sizeof(target), "pointhurtvictim%d", victim);
+			DispatchKeyValue(victim, "targetname", target);
+			DispatchKeyValue(pointHurt, "DamageTarget", target);
+			DispatchKeyValue(pointHurt, "Damage", dmg_str);
+			DispatchKeyValue(pointHurt, "DamageType", dmg_type_str);
+			if (!StrEqual(weapon, ""))
+			{
+				DispatchKeyValue(pointHurt, "classname", weapon);
+			}
+			DispatchSpawn(pointHurt);
+			AcceptEntityInput(pointHurt, "Hurt", (attacker > 0 ? attacker : -1));
+			DispatchKeyValue(pointHurt, "classname", "point_hurt");
+			DispatchKeyValue(victim, "targetname", "notpointhurtvictim");
+			AcceptEntityInput(pointHurt, "Kill");
+		}
+	}
+}
+
+stock float GetConditionDuration(int client, TFCond cond)
+{
+	int m_Shared = FindSendPropInfo("CTFPlayer", "m_Shared");
+	
+	Address aCondSource   = view_as< Address >(ReadInt(GetEntityAddress(client) + view_as< Address >(m_Shared + 8)));
+	Address aCondDuration = view_as< Address >(view_as< int >(aCondSource) + (view_as< int >(cond) * 20) + (2 * 4));
+	
+	float flDuration = 0.0;
+	if(TF2_IsPlayerInCondition(client, cond))
+	{
+		flDuration = view_as<float>(ReadInt(aCondDuration));
+	}
+	
+	return flDuration;
+}
+
+stock int ReadInt(Address address)
+{
+	return LoadFromAddress(address, NumberType_Int32);
+}
+
+stock int FindEntityByClassname2(int startEnt, const char[] classname)
+{
+	while(startEnt > -1 && !IsValidEntity(startEnt))
+	{
+		startEnt--;
+	}
+	return FindEntityByClassname(startEnt, classname);
+}
+
+////////////////////////////////////////////////////
+//////////////////////TIMERS////////////////////////
+////////////////////////////////////////////////////
+
+public Action Timer_NoticeCommand(Handle hTimer)
+{
+	if(!GetConVarBool(cvarEnabled))
+	{
+		return Plugin_Stop;
+	}
+	SetGameDescription();
+	CPrintToChatAll("%t", "advertise");
+	return Plugin_Continue;
+}
+
+public Action Timer_ColaTimer(Handle hTimer, any userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(!IsValidClient(client))
+	{
+		colaTimer[client] = null;
+		return Plugin_Stop;
+	}
+	
+	colaEffect[client] = false;
+	TF2Attrib_SetByName(client, "move speed penalty", 1.0);
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.01);
+	return Plugin_Continue;
+}
+
+public Action Timer_IcicleTimer(Handle hTimer, any userid)
+{
+	int client = GetClientOfUserId(userid);
+	int melee = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+	
+	if(!IsValidClient(client) || !IsValidEntity(melee) || GetEntProp(melee, Prop_Send, "m_iItemDefinitionIndex") != 649)
+	{
+		icicleTimer[client] = null;
+		return Plugin_Stop;
+	}
+	
+	icicleEffect[client] = false;
+	TF2Attrib_SetByName(client, "dmg taken from fire reduced", 1.0);
+	KillTimer(icicleTimer[client]);
+	icicleTimer[client] = null;
+	return Plugin_Continue;
+}
+
+public Action Timer_Bonk(Handle hTimer, any userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(!IsValidClient(client) || !IsPlayerAlive(client) || !TF2_IsPlayerInCondition(client, TFCond_Dazed))
+	{
+		return Plugin_Stop;
+	}
+	
+	TF2_RemoveCondition(client, TFCond_Dazed);
+	return Plugin_Continue;
+}
+
+public Action Timer_ChargeCrit(Handle hTimer, any userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(!IsValidClient(client) || !IsPlayerAlive(client) || !TF2_IsPlayerInCondition(client, TFCond_CritDemoCharge))
+	{
+		chargeTimer[client] = null;
+		demoCharging[client] = false;
+		return Plugin_Stop;
+	}
+	
+	demoCharging[client] = true;
+	return Plugin_Continue;
+}
+
+public Action Timer_ConchHeal(Handle hTimer, any userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(!IsValidClient(client) || !IsPlayerAlive(client))
+	{
+		conchTimer[client] = null;
+		return Plugin_Stop;
+	}
+	
+	int health = GetClientHealth(client);
+	int maxhealth = GetEntProp(client, Prop_Data, "m_iMaxHealth");
+	if(health < maxhealth)
+	{
+		if(health + 2 <= maxhealth)
+		{
+			SetEntityHealth(client, health + 2);
+			HealPlayer(client, 2);
+		}
+		else
+		{
+			SetEntityHealth(client, maxhealth);
+			HealPlayer(client, 1);
+		}
+	}
+	return Plugin_Continue;
+}
+
+public Action Timer_DetectCharge(Handle hTimer, any userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(!IsValidClient(client) || !IsPlayerAlive(client) || !TF2_IsPlayerInCondition(client, TFCond_CritDemoCharge))
+	{
+		chargeTimer[client] = null;
+		demoCharging[client] = false;
+		return Plugin_Stop;
+	}
+	
+	demoCharging[client] = false;
+	return Plugin_Continue;
+}
+
+public Action Timer_StartHook(Handle timer, any userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(IsValidClient(client))
+	{
+		SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
+	}
+}
+
+public Action Timer_SandmanTimer(Handle timer, Handle datapack) //Taken from FF2 default_abilities
+{
+	float distance;
+	int client, attacker, damagetype;
+	
+	ResetPack(datapack);
+	distance = ReadPackFloat(datapack);
+	client = ReadPackCell(datapack);
+	attacker = ReadPackCell(datapack);
+	damagetype = ReadPackCell(datapack);
+	
+	if(distance >= 256.0 && distance < 1792.0)
+	{
+		if(damagetype & DMG_CRIT)
+		{
+			TF2_StunPlayer(client, (distance / 256.0) + 2.0, 0.0, TF_STUNFLAGS_SMALLBONK|TF_STUNFLAG_NOSOUNDOREFFECT, attacker);
+			CreateTimer((distance / 256.0) + 2.0, Timer_StarsRemove, EntIndexToEntRef(AttachParticle(client, "conc_stars", 80.0)), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		else
+		{
+			TF2_StunPlayer(client, distance / 256.0, 0.0, TF_STUNFLAGS_SMALLBONK|TF_STUNFLAG_NOSOUNDOREFFECT, attacker);
+			CreateTimer(distance / 256.0, Timer_StarsRemove, EntIndexToEntRef(AttachParticle(client, "conc_stars", 80.0)), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+	else if(distance >= 1792.0)
+	{
+		if(damagetype & DMG_CRIT)
+		{
+			TF2_StunPlayer(client, 9.0, 0.0, TF_STUNFLAGS_BIGBONK|TF_STUNFLAG_NOSOUNDOREFFECT, attacker);
+			CreateTimer(9.0, Timer_StarsRemove, EntIndexToEntRef(AttachParticle(client, "conc_stars", 80.0)), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		else
+		{
+			TF2_StunPlayer(client, 7.0, 0.0, TF_STUNFLAGS_BIGBONK|TF_STUNFLAG_NOSOUNDOREFFECT, attacker);
+			CreateTimer(7.0, Timer_StarsRemove, EntIndexToEntRef(AttachParticle(client, "conc_stars", 80.0)), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+	return Plugin_Continue;
+}
+
+public Action Timer_StarsRemove(Handle timer, any entid) //Taken from FF2 default_abilities
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity > MaxClients)
+	{
+		AcceptEntityInput(entity, "Kill");
+	}
+	return Plugin_Continue;
+}
+
+public Action OnTakeDamage(int client, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	if(!GetConVarBool(cvarEnabled) || !IsValidClient(client) || !IsValidClient(attacker))
+	{
+		return Plugin_Continue;
+	}
+	
+	if(damagecustom == TF_CUSTOM_CLEAVER)
+	{
+		if(TF2_IsPlayerInCondition(client, TFCond_Dazed))
+		{
+			damagetype|=DMG_CRIT;
+			return Plugin_Changed;
+		}
+	}
+	
+	int melee = GetPlayerWeaponSlot(attacker, TFWeaponSlot_Melee);
+	if(IsValidEntity(melee) && damagecustom == TF_CUSTOM_BASEBALL && !TF2_IsPlayerInCondition(client, TFCond_Ubercharged) && client != attacker && GetEntProp(melee, Prop_Send, "m_iItemDefinitionIndex") == 44) //Old Sandman Stun
+	{
+		TF2_RemoveCondition(client, TFCond_Dazed);
+		float attackerPosition[3], victimPosition[3];
+		GetEntPropVector(attacker, Prop_Send, "m_vecOrigin", attackerPosition);
+		GetEntPropVector(client, Prop_Send, "m_vecOrigin", victimPosition);
+		float distance = GetVectorDistance(attackerPosition, victimPosition);
+		
+		
+		Handle datapack; 
+		CreateDataTimer(0.01, Timer_SandmanTimer, datapack);
+		WritePackFloat(datapack, distance);
+		WritePackCell(datapack, client);
+		WritePackCell(datapack, attacker);
+		WritePackCell(datapack, damagetype);
+	}
+	
+	int shield = MaxClients+1;
+	while((shield = FindEntityByClassname2(shield, "tf_wearable_demoshield")) != -1)
+	{
+		int idx = GetEntProp(shield, Prop_Send, "m_iItemDefinitionIndex");
+		if (IsValidEntity(melee) && melee > -1 && (idx == 1099) && GetEntPropEnt(shield, Prop_Send, "m_hOwnerEntity") == attacker && !GetEntProp(shield, Prop_Send, "m_bDisguiseWearable") && demoCharging[attacker])
+		{
+			if(GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon") == melee && damagecustom != TF_CUSTOM_BLEEDING && damagecustom != TF_CUSTOM_BURNING && damagecustom != TF_CUSTOM_BURNING_ARROW && damagecustom != TF_CUSTOM_BURNING_FLARE && damagecustom != TF_CUSTOM_CHARGE_IMPACT)
+			{
+				damagetype|=DMG_CRIT;
+				demoCharging[client] = false;
+				return Plugin_Changed;
+			}
+		}
+	}
+	
+	int activeWep = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
+	if(IsValidEntity(activeWep) && GetEntProp(activeWep, Prop_Send, "m_iItemDefinitionIndex") == 230)
+	{
+		if((damagetype & DMG_CRIT) && !(TF2_IsPlayerInCondition(attacker, TFCond_Kritzkrieged) ||
+		TF2_IsPlayerInCondition(attacker, TFCond_HalloweenCritCandy) ||
+		TF2_IsPlayerInCondition(attacker, TFCond_CritCanteen) ||
+		TF2_IsPlayerInCondition(attacker, TFCond_CritOnWin) ||
+		TF2_IsPlayerInCondition(attacker, TFCond_CritOnFlagCapture) ||
+		TF2_IsPlayerInCondition(attacker, TFCond_CritOnKill)))
+		{
+			damagetype &= ~DMG_CRIT;
+			return Plugin_Changed;
+		}
+	}
+	return Plugin_Continue;
 }

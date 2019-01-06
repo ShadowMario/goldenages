@@ -15,7 +15,7 @@
 #tryinclude <updater>
 #define REQUIRE_PLUGIN
 
-#define PLUGIN_VERSION		"1.0.1"
+#define PLUGIN_VERSION		"1.0.2"
 
 #define UPDATE_URL "http://shadowmario.github.io/goldenages/updater.txt"
 
@@ -773,7 +773,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	if(IsValidEntity(hpda) && GetEntProp(hpda, Prop_Send, "m_iItemDefinitionIndex") == 59) weaponChanges[client][4] = true;
 	else weaponChanges[client][4] = false;
 	
-	if(GetEntProp(activeWep, Prop_Send, "m_iItemDefinitionIndex") == 220 || GetEntProp(activeWep, Prop_Send, "m_iItemDefinitionIndex") == 448)
+	if(IsValidEntity(activeWep) && (GetEntProp(activeWep, Prop_Send, "m_iItemDefinitionIndex") == 220 || GetEntProp(activeWep, Prop_Send, "m_iItemDefinitionIndex") == 448))
 	{
 		int index = GetEntProp(activeWep, Prop_Send, "m_iItemDefinitionIndex");
 		if(index == 448) //Soda Popper's Old Hype Charging
@@ -887,13 +887,20 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	}
 	if (condition == TFCond_CritCola)
 	{
-		float duration = GetConditionDuration(client, TFCond_CritCola);
-		TF2_RemoveCondition(client, TFCond_CritCola);
-		colaEffect[client] = true;
-		colaTimer[client] = CreateTimer(duration, Timer_ColaTimer, GetClientUserId(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-		
-		TF2Attrib_SetByName(client, "move speed penalty", 1.25);
-		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.001);
+		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+		if(IsValidEntity(secondary))
+		{
+			if(GetEntProp(secondary, Prop_Send, "m_iItemDefinitionIndex") == 163)
+			{
+				float duration = GetConditionDuration(client, TFCond_CritCola);
+				TF2_RemoveCondition(client, TFCond_CritCola);
+				colaEffect[client] = true;
+				colaTimer[client] = CreateTimer(duration, Timer_ColaTimer, GetClientUserId(client), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+				
+				TF2Attrib_SetByName(client, "move speed penalty", 1.25);
+				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.001);
+			}
+		}
 	}
 	if (condition == TFCond_CritDemoCharge)
 	{

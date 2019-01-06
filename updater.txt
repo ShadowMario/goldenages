@@ -9,7 +9,7 @@
 		}
 
 		"Notes"			"Fixed some Invalid Entity errors"
-		"Notes"			"Fixed a mistake that caused the malfunctioning of Beefalo Steak Sandvich and Cleaner Carabin's Crikey"
+		"Notes"			"Fixed a mistake that caused the malfunctioning of Beefalo Steak Sandvich and Cleaner Carbine's Crikey"
 	}
 
 	"Files"
